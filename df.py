@@ -4,13 +4,15 @@ import plotly.express as px
 import pandas as pd
 import xml.etree.ElementTree as ET
 
-df = pd.read_csv(r'/Users/macmini/Desktop/streamlit/จบงาน.csv')
+dfx = pd.read_csv(r'/Users/macmini/Desktop/streamlit/จบงาน.csv')
 
-df = df[['พนักงานตรวจสอบ','ใช้เซอร์เวย์นอก','ประเภทเคลม(ว.4/นัดหมาย)','วันที่/เวลารับงาน','วันที่/เวลาส่งรายงาน']]
+dfx = dfx.dropna()
 
-df = df.loc[ (df['ใช้เซอร์เวย์นอก']=='ไม่ใช้') & (df['ประเภทเคลม(ว.4/นัดหมาย)']=='เคลมสด')  ]
+dfx = dfx[['พนักงานตรวจสอบ','ใช้เซอร์เวย์นอก','ประเภทเคลม(ว.4/นัดหมาย)','วันที่/เวลารับงาน','วันที่/เวลาส่งรายงาน']]
 
-df = df.dropna()
+dfx = dfx.loc[ (dfx['ใช้เซอร์เวย์นอก']=='ไม่ใช้') & (dfx['ประเภทเคลม(ว.4/นัดหมาย)']=='เคลมสด')  ]
+
+
 
 '''
 เงื่อนไข
@@ -18,10 +20,19 @@ df = df.dropna()
     2. ลบคอลัมน์ Unnamed: 0
 '''
 
-df.reset_index(inplace=True,drop = True)
+dfx.reset_index(inplace=True,drop = True)
 
-st.dataframe(df.set_index(df.columns[0])) # ไม่โชว์คอลัมน์ index ใน streamlit
-st.dataframe(df) # ไม่โชว์คอลัมน์ index ใน streamlit
+# st.dataframe(dfx.set_index(dfx.columns[0])) # ไม่โชว์คอลัมน์ index ใน streamlit
+# st.dataframe(dfx) # ไม่โชว์คอลัมน์ index ใน streamlit
 
+count = []
+for i in range(len((dfx['ใช้เซอร์เวย์นอก']))):
+    ans = i+1
+    count.append(ans)
+    print(ans)
 
+indexs = pd.DataFrame(count,columns=['ลำดับ'])
 
+df =  pd.concat([indexs,dfx],axis=1)
+
+st.dataframe(df.set_index(df.columns[0]))
